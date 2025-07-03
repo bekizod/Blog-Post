@@ -1,5 +1,9 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
+import Header from "~/Layout/header";
+import { useAppDispatch } from "~/store/hooks";
+import { useEffect } from "react";
+import { initializeAuth } from "~/store/features/auth/authSlice";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +13,14 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+  return (
+    <>
+      <Welcome />
+    </>
+  );
 }

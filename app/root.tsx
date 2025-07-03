@@ -6,9 +6,15 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import React from "react";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ThemeProvider } from "components/ui/ThemeContext";
+import Header from "./Layout/header";
+import Footer from "./Layout/footer";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +48,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <Provider store={store}>
+      <ThemeProvider>
+        <Header />
+        <Outlet />
+        <Footer />
+      </ThemeProvider>
+    </Provider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
