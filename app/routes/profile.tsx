@@ -39,6 +39,7 @@ import {
   FiMoreHorizontal,
 } from "react-icons/fi";
 import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 
 type CommentFormData = {
   content: string;
@@ -59,7 +60,8 @@ type CreatePostFormData = {
 export default function Blog() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state: any) => state.profile);
-  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const token = Cookies.get("auth_token");
   const navigate = useNavigate();
   const posts = useAppSelector(selectPosts);
   const currentPost = useAppSelector(selectCurrentPost);
@@ -311,12 +313,12 @@ export default function Blog() {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="px-4 sm:px-6 lg:px-8 py-12 bg-gray-100 dark:bg-gray-900 min-h-screen">
       {/* Header and Search */}
       <div className="max-w-4xl mx-auto mb-12">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            Blog Posts
+            My Blog Posts
           </h1>
           <button
             onClick={() => setShowCreateModal(true)}
@@ -396,12 +398,12 @@ export default function Blog() {
                     <button
                       onClick={() => handleToggleLike(post.id)}
                       className={`flex items-center space-x-1 ${
-                        post.isLiked ? "text-red-500" : "text-gray-500"
+                        post.isLikedByMe ? "text-blue-500" : "text-gray-500"
                       }`}
                     >
                       <FiHeart
                         className={`h-5 w-5 ${
-                          post.isLiked ? "fill-current" : ""
+                          post.isLikedByMe ? "fill-current" : ""
                         }`}
                       />
                       <span>{post.likesCount}</span>
@@ -484,7 +486,7 @@ export default function Blog() {
                   {post.commentCount > 3 && (
                     <button
                       onClick={() => openCommentsModal(post.id)}
-                      className="mt-3 text-sm text-indigo-600 hover:text-indigo-800 dark:hover:text-indigo-400"
+                      className="mt-3 text-sm cursor-pointer text-indigo-600 hover:text-indigo-800 dark:hover:text-indigo-400"
                     >
                       See all {post.commentCount} comments
                     </button>
@@ -502,7 +504,7 @@ export default function Blog() {
                 >
                   <div className="flex-shrink-0">
                     <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">
-                      {user ? generateAvatar(user.username) : "YO"}
+                      {user ? generateAvatar(user.userName) : "YO"}
                     </div>
                   </div>
                   <div className="flex-1">
@@ -779,7 +781,7 @@ export default function Blog() {
 
       {/* Single Post Modal */}
       {showPostModal && currentPost && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
@@ -831,13 +833,15 @@ export default function Blog() {
                 <div className="flex space-x-4">
                   <button
                     onClick={() => handleToggleLike(currentPost.id)}
-                    className={`flex items-center space-x-1 ${
-                      currentPost.isLiked ? "text-red-500" : "text-gray-500"
+                    className={`flex items-center cursor-pointer space-x-1 ${
+                      currentPost.isLikedByMe
+                        ? "text-blue-500"
+                        : "text-gray-500"
                     }`}
                   >
                     <FiHeart
                       className={`h-5 w-5 ${
-                        currentPost.isLiked ? "fill-current" : ""
+                        currentPost.isLikedByMe ? "fill-current" : ""
                       }`}
                     />
                     <span>{currentPost.likesCount}</span>
@@ -1006,7 +1010,7 @@ export default function Blog() {
               >
                 <div className="flex-shrink-0">
                   <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
-                    {user ? generateAvatar(user.username) : "YO"}
+                    {user ? generateAvatar(user.userName) : "YO"}
                   </div>
                 </div>
                 <div className="flex-1">
