@@ -90,7 +90,7 @@ const Header = () => {
 
           {/* Profile dropdown */}
           <div className="ml-4 flex gap-6 items-center md:ml-6 relative">
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="flex items-center space-x-8">
               <ThemeToggleButton />
             </nav>
             {isAuthenticated ? (
