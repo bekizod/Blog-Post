@@ -107,7 +107,7 @@ export const fetchPostById = createAsyncThunk<Post, number, { state: RootState }
       `https://course-start.onrender.com/posts/${postId}`,
       getAuthHeaders(getState())
     );
-    return response.data;
+    return response.data.data; // Access the data property from the response
   }
 );
 
@@ -177,6 +177,22 @@ export const addComment = createAsyncThunk<
   return response.data;
 });
 
+export const checkLikeStatus = createAsyncThunk<
+  { postId: number; isLiked: boolean },
+  number,
+  { state: RootState }
+>("post/checkLikeStatus", async (postId, { getState }) => {
+  const response = await axios.get(
+    `https://course-start.onrender.com/posts/${postId}/likes/check`,
+    getAuthHeaders(getState())
+  );
+  // Make sure to return the isLiked from the response data
+  return { 
+    postId, 
+    isLiked: response.data.data.isLiked // Access isLiked from data.data
+  };
+});
+
 export const toggleLike = createAsyncThunk<
   { postId: number; isLiked: boolean },
   number,
@@ -188,24 +204,16 @@ export const toggleLike = createAsyncThunk<
     getAuthHeaders(getState())
   );
   
+  // After toggling, check the new status
   const checkResponse = await axios.get(
     `https://course-start.onrender.com/posts/${postId}/likes/check`,
     getAuthHeaders(getState())
   );
   
-  return { postId, isLiked: checkResponse.data.isLiked };
-});
-
-export const checkLikeStatus = createAsyncThunk<
-  { postId: number; isLiked: boolean },
-  number,
-  { state: RootState }
->("post/checkLikeStatus", async (postId, { getState }) => {
-  const response = await axios.get(
-    `https://course-start.onrender.com/posts/${postId}/likes/check`,
-    getAuthHeaders(getState())
-  );
-  return { postId, isLiked: response.data.isLiked };
+  return { 
+    postId, 
+    isLiked: checkResponse.data.data.isLiked // Access isLiked from data.data
+  };
 });
 
 const postSlice = createSlice({
@@ -349,54 +357,58 @@ const postSlice = createSlice({
         state.error = action.error.message || "Failed to add comment";
       })
       
-      // Toggle Like
-      .addCase(toggleLike.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(toggleLike.fulfilled, (state, action) => {
-        state.loading = false;
-        const { postId, isLiked } = action.payload;
-        
-        if (state.currentPost?.id === postId) {
-          state.currentPost.likesCount += isLiked ? 1 : -1;
-          state.currentPost.isLiked = isLiked;
-        }
-        
-        state.posts = state.posts.map(post => {
-          if (post.id === postId) {
-            return {
-              ...post,
-              likesCount: post.likesCount + (isLiked ? 1 : -1),
-              isLiked,
-            };
-          }
-          return post;
-        });
-      })
-      .addCase(toggleLike.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to toggle like";
-      })
-      
       // Check Like Status
-      .addCase(checkLikeStatus.fulfilled, (state, action) => {
-        const { postId, isLiked } = action.payload;
-        
-        if (state.currentPost?.id === postId) {
-          state.currentPost.isLiked = isLiked;
+    .addCase(checkLikeStatus.fulfilled, (state, action) => {
+      const { postId, isLiked } = action.payload;
+      
+      // Update current post if it's the one being checked
+      if (state.currentPost?.id === postId) {
+        state.currentPost.isLiked = isLiked;
+      }
+      
+      // Update in posts array
+      state.posts = state.posts.map(post => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            isLiked,
+          };
         }
-        
-        state.posts = state.posts.map(post => {
-          if (post.id === postId) {
-            return {
-              ...post,
-              isLiked,
-            };
-          }
-          return post;
-        });
+        return post;
       });
+    })
+    
+    // Toggle Like
+    .addCase(toggleLike.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(toggleLike.fulfilled, (state, action) => {
+      state.loading = false;
+      const { postId, isLiked } = action.payload;
+      
+      // Update current post if it's the one being toggled
+      if (state.currentPost?.id === postId) {
+        state.currentPost.likesCount += isLiked ? 1 : -1;
+        state.currentPost.isLiked = isLiked;
+      }
+      
+      // Update in posts array
+      state.posts = state.posts.map(post => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            likesCount: isLiked ? post.likesCount + 1 : post.likesCount - 1,
+            isLiked,
+          };
+        }
+        return post;
+      });
+    })
+    .addCase(toggleLike.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message || "Failed to toggle like";
+    });
   },
 });
 
