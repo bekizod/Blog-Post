@@ -79,39 +79,20 @@ const Header = () => {
           {/* Logo/Brand */}
           <div className="flex-shrink-0 flex items-center">
             <Link
-              to="/"
+              to="/blog"
               className="text-xl font-bold text-indigo-600 dark:text-indigo-400"
             >
-              ModernBlog
+              BlogSphere
             </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-medium"
-            >
-              Home
-            </Link>
-            <Link
-              to="/articles"
-              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-medium"
-            >
-              Articles
-            </Link>
-            <Link
-              to="/about"
-              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-medium"
-            >
-              About
-            </Link>
-
-            <ThemeToggleButton />
-          </nav>
 
           {/* Profile dropdown */}
-          <div className="ml-4 flex items-center md:ml-6 relative">
+          <div className="ml-4 flex gap-6 items-center md:ml-6 relative">
+            <nav className="hidden md:flex items-center space-x-8">
+              <ThemeToggleButton />
+            </nav>
             {isAuthenticated ? (
               <>
                 <button
@@ -157,24 +138,9 @@ const Header = () => {
                       role="menuitem"
                       onClick={handleDropdownItemClick}
                     >
-                      Your Profile
+                      Your Posts
                     </Link>
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
-                      role="menuitem"
-                      onClick={handleDropdownItemClick}
-                    >
-                      Settings
-                    </Link>
-                    <Link
-                      to="/saved"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
-                      role="menuitem"
-                      onClick={handleDropdownItemClick}
-                    >
-                      Saved Articles
-                    </Link>
+
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"

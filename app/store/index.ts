@@ -3,13 +3,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './features/auth/authSlice';
 import registerReducer from './features/auth/registerSlice';
 import profileReducer from './features/profileSlice';
-// import postsReducer from '../features/posts/postsSlice';
+ import postReducer from './features/post/postSlice';
 
 export const store = configureStore({
   reducer: {
      auth: authReducer,
      register: registerReducer,
      profile: profileReducer,
+     post: postReducer,
     // posts: postsReducer,
     // Add more slices here
   },

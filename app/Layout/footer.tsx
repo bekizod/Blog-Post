@@ -8,7 +8,7 @@ const Footer = () => {
           {/* Brand/Logo Section */}
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-              ModernBlog
+              BlogSphere
             </h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
               Sharing knowledge and insights about modern web development.
@@ -155,7 +155,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-500 dark:text-gray-400 text-sm">
-            © {new Date().getFullYear()} ModernBlog. All rights reserved.
+            © {new Date().getFullYear()} BlogSphere. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <a

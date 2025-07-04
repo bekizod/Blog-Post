@@ -15,6 +15,7 @@ import "./app.css";
 import { ThemeProvider } from "components/ui/ThemeContext";
 import Header from "./Layout/header";
 import Footer from "./Layout/footer";
+import { Toaster } from "react-hot-toast";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -52,6 +53,7 @@ export default function App() {
     <Provider store={store}>
       <ThemeProvider>
         <Header />
+        <Toaster />
         <Outlet />
         <Footer />
       </ThemeProvider>
